@@ -1,11 +1,13 @@
 <?php
 
-use App\Models\Category;
+use App\Models\Kopi;
 use App\Models\Post;
 use App\Models\User;
+use App\Models\Category;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\CoffeeController;
+use App\Http\Controllers\ProfileController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -54,3 +56,34 @@ Route::get('/contact', function () {
         'title' => 'contact'
     ]);
 });
+Route::get('/register', function () {
+    return view('auth.register', []);
+});
+
+Route::get('/dashboard', function () {
+    return view('admin/dashboard', [
+        'title' => 'Dashboard'
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::resource('/coffee', CoffeeController::class)
+    ->middleware(['auth', 'verified'])
+    ->names([
+        'index' => 'listcoffee',
+        'create' => 'coffee.create',
+        'store' => 'coffee.store',
+        'show' => 'coffee.show',
+        'edit' => 'coffee.edit',
+        'update' => 'coffee.update',
+        'destroy' => 'coffee.destroy',
+    ]);
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';

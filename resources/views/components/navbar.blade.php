@@ -1,7 +1,7 @@
 <nav class="relative bg-white" x-data="{ mobileMenuOpen: false, userDropdownOpen: false }">
     <!-- Main navigation container -->
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-20 items-center justify-between">
+        <div class="flex h-20 items-center justify-self-center">
             <!-- Logo and nav links -->
             <div class="flex items-center">
                 <!-- Enhanced Logo -->
@@ -9,18 +9,18 @@
                     <div class="relative h-10 w-10">
                         <!-- Background layers with enhanced animation -->
                         <div
-                            class="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl rotate-6 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
+                            class="absolute inset-0 bg-gradient-to-r from-amber-700 to-gray-950 rounded-xl rotate-6 transform transition-all duration-300 group-hover:rotate-12 group-hover:scale-110">
                         </div>
                         <div
-                            class="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl rotate-2 transform transition-all duration-300 group-hover:rotate-6 group-hover:scale-105">
+                            class="absolute inset-0 bg-gradient-to-r from-amber-950 to-gray-50 rounded-xl rotate-2 transform transition-all duration-300 group-hover:rotate-6 group-hover:scale-105">
                         </div>
                         <div
-                            class="relative bg-gradient-to-r from-indigo-600 to-purple-600 h-full w-full rounded-xl flex items-center justify-center transform transition-transform duration-300 group-hover:scale-95">
-                            <span class="text-xl font-bold text-gray-50">KC</span>
+                            class="relative bg-gradient-to-r from-amber-700 to-amber-950 h-full w-full rounded-xl flex items-center justify-center transform transition-transform duration-300 group-hover:scale-95">
+                            <span class="text-xl font-bold text-gray-50">☕</span>
                         </div>
                     </div>
                     <span
-                        class="ml-3 text-4xl font-bold bg-gradient-to-r from-indigo-500 via-indigo-500 to-pink-500 bg-clip-text text-transparent hover:from-amber-600 hover:via-amber-400 hover:to-amber-200 transition-all duration-300">
+                        class="ml-3 text-4xl font-bold bg-gradient-to-r from-amber-700 via-amber-950 to-gray-950 bg-clip-text text-transparent transition-all duration-300">
                         KEAN COFFEE
                     </span>
                     <!-- Logo hover glow effect -->
@@ -46,71 +46,125 @@
                     <x-nav-link href="/contact" :active="request()->is('contact')">
                         Contact
                     </x-nav-link>
+
+                    @auth
+                        <div class="relative flex items-center" x-data="{ open: false }" @click.away="open = false">
+                            <!-- User Avatar Button -->
+                            <button @click="open = !open" class="relative flex items-center group focus:outline-none"
+                                aria-expanded="false" aria-haspopup="true">
+                                <img src="{{ Auth::user()->profile_photo_url ?? asset('path/to/default-avatar.png') }}"
+                                    alt="{{ Auth::user()->name }}"
+                                    class="w-10 h-10 rounded-full object-cover transition duration-150 ease-in-out ring-2 ring-transparent group-hover:ring-[#FF2D20]">
+                                <!-- Small Dropdown Indicator -->
+                                <svg class="ml-2 h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors duration-150 ease-in-out"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="transform opacity-0 scale-95"
+                                x-transition:enter-end="transform opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="transform opacity-100 scale-100"
+                                x-transition:leave-end="transform opacity-0 scale-95"
+                                class="absolute left top-full mt-2 w-30 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
+                                style="display: none;">
+
+                                <!-- User Info Section -->
+                                <div class="px-4 py-2 border-b border-gray-100">
+                                    <p class="text-sm font-medium text-gray-900 truncate">
+                                        {{ Str::limit(Auth::user()->name, 14) }}</p>
+                                    <p class="text-sm text-gray-500 truncate">{{ Str::limit(Auth::user()->email, 14) }}</p>
+                                </div>
+
+                                <!-- Navigation Links -->
+                                <a href="{{ url('/dashboard') }}"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out"
+                                    role="menuitem">
+                                    <div class="flex items-center">
+                                        <svg class="mr-3 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                        </svg>
+                                        Dashboard
+                                    </div>
+                                </a>
+
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition duration-150 ease-in-out group"
+                                        role="menuitem">
+                                        <div class="flex items-center">
+                                            <svg class="mr-3 h-4 w-4 text-gray-400 " xmlns="http://www.w3.org/2000/svg"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                            </svg>
+                                            <span class=" transition-colors duration-150">Logout</span>
+                                        </div>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <x-nav-link href="{{ route('login') }}" :active="request()->is('login')"
+                            class="rounded-md px-4 py-2 text-gray-800 transition duration-150 ease-in-out
+               hover:bg-gray-100
+               dark:text-white dark:hover:bg-gray-800">
+                            <span class="flex items-center">
+                                <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                </svg>
+                                Login
+                            </span>
+                        </x-nav-link>
+                    @endauth
+                    <style>
+                        /* Smooth dropdown backdrop animation */
+                        .backdrop-blur-dropdown {
+                            backdrop-filter: blur(8px);
+                            -webkit-backdrop-filter: blur(8px);
+                        }
+
+                        /* Optional: Add these to your existing CSS for enhanced animations */
+                        @keyframes dropdownIn {
+                            from {
+                                opacity: 0;
+                                transform: translateY(-8px);
+                            }
+
+                            to {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+                        }
+
+                        @keyframes dropdownOut {
+                            from {
+                                opacity: 1;
+                                transform: translateY(0);
+                            }
+
+                            to {
+                                opacity: 0;
+                                transform: translateY(-8px);
+                            }
+                        }
+                    </style>
                 </div>
             </div>
 
             <!-- Right section -->
             <div class="flex items-center space-x-6">
-                <!-- Enhanced Search Bar -->
-                {{-- <div class="hidden md:block">
-                    <div class="relative group">
-                        <input type="text"
-                            class="w-64 px-4 py-2 pl-10 text-sm bg-gray-800/50 rounded-full text-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 backdrop-blur-sm border border-gray-700/50 group-hover:border-indigo-500/50"
-                            placeholder="Search...">
-                        <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 transition-colors duration-300 group-hover:text-indigo-400"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <!-- Search bar hover glow -->
-                        <div
-                            class="absolute inset-0 rounded-full bg-indigo-500/20 opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-300">
-                        </div>
-                    </div>
-                </div> --}}
-
-                <!-- Enhanced Profile Dropdown -->
-                {{-- <div class="hidden md:relative md:flex md:items-center" x-data="{ open: false }">
-                    <button @click="open = !open" @click.away="open = false"
-                        class="flex items-center space-x-3 focus:outline-none group relative" id="user-menu-button"
-                        aria-expanded="false" aria-haspopup="true">
-                        <div
-                            class="relative h-10 w-10 rounded-full overflow-hidden ring-2 ring-indigo-500/50 transition-all duration-300 group-hover:ring-indigo-400 group-hover:ring-offset-2 group-hover:ring-offset-gray-800">
-                            <img src="/api/placeholder/40/40" alt="Profile"
-                                class="h-full w-full object-cover transform transition-transform duration-300 group-hover:scale-110">
-                        </div>
-                        <span class="text-gray-300 transition-colors duration-300 group-hover:text-white">Tom
-                            Cook</span>
-                        <svg class="h-5 w-5 text-gray-400 transition-all duration-300"
-                            :class="{ 'transform rotate-180 text-indigo-400': open }" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                        <!-- Profile button hover glow -->
-                        <div
-                            class="absolute -inset-2 rounded-lg bg-white/5 opacity-0 group-hover:opacity-100 blur-sm transition-opacity duration-300">
-                        </div>
-                    </button>
-
-                    <!-- Enhanced Dropdown Menu -->
-                    <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="transform opacity-0 scale-95"
-                        x-transition:enter-end="transform opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="transform opacity-100 scale-100"
-                        x-transition:leave-end="transform opacity-0 scale-95"
-                        class="absolute right-0 top-12 z-50 mt-2 w-48 origin-top-right rounded-md bg-white/10 backdrop-blur-lg py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors duration-150">Your
-                            Profile</a>
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors duration-150">Settings</a>
-                        <a href="#"
-                            class="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors duration-150">Sign
-                            out</a>
-                    </div>
-                </div> --}}
-
                 <!-- Enhanced Mobile menu button -->
                 <button type="button" @click="mobileMenuOpen = !mobileMenuOpen"
                     class="md:hidden relative rounded-md p-2 text-gray-950 hover:text-black focus:outline-none group">
@@ -123,8 +177,8 @@
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                     <svg x-show="mobileMenuOpen"
-                        class="h-6 w-6 transform transition-transform duration-300 group-hover:scale-110" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+                        class="h-6 w-6 transform transition-transform duration-300 group-hover:scale-110"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -154,6 +208,9 @@
             </x-nav-link>
             <x-nav-link href="/contact" :active="request()->is('contact')">
                 Contact
+            </x-nav-link>
+            <x-nav-link href="{{ route('login') }}" :active="request()->is('login')">
+                Login
             </x-nav-link>
 
         </div>

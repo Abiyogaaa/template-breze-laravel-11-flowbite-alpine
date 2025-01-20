@@ -15,12 +15,12 @@
             class="absolute -inset-2 rounded-lg bg-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></span>
         <!-- Underline effect -->
         <span
-            class="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-300 
+            class="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-amber-700 via-amber-950 to-gray-50 transition-all duration-300 
             {{ $active ? 'w-full' : 'w-0 group-hover:w-full' }}"></span>
     </span>
     <!-- Hover indicator dot -->
     <span
-        class="ml-1 h-1.5 w-1.5 rounded-full bg-indigo-500 transform scale-0 group-hover:scale-100 transition-transform duration-300"></span>
+        class="ml-1 h-1.5 w-1.5 rounded-full bg-amber-700 transform scale-0 group-hover:scale-100 transition-transform duration-300"></span>
 </a>
 
 {{-- template --}}
